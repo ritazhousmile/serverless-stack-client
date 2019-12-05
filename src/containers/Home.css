@@ -32,4 +32,22 @@
 
 a.list-group-item, a.list-group-item:hover {
   background-color: inherit;
+
+}
+
+.list-group-item {
+  width: 31%;
+  display: inline-block;
+  height: 200px;
+  margin: 0.5%;
+  min-width: 320px;
+  border-radius: 12px;
+}
+
+.list-group-item-text {
+
+}
+
+.list-group-item-heading {
+
 }
