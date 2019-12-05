@@ -3,6 +3,7 @@ import { API, Storage } from "aws-amplify";
 import { s3Upload } from "../libs/awsLib";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
+import { CirclePicker } from 'react-color';
 import config from "../config";
 import "./Notes.css";
 
@@ -10,6 +11,7 @@ export default function Notes(props) {
   const file = useRef(null);
   const [note, setNote] = useState(null);
   const [content, setContent] = useState("");
+  const [noteColor, setNoteColor] = useState("#FFFFFF");
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -21,12 +23,13 @@ export default function Notes(props) {
     async function onLoad() {
       try {
         const note = await loadNote();
-        const { content, attachment } = note;
+        const { content, attachment, noteColor } = note;
 
         if (attachment) {
           note.attachmentURL = await Storage.vault.get(attachment);
         }
 
+        setNoteColor(noteColor)
         setContent(content);
         setNote(note);
       } catch (e) {
@@ -47,6 +50,10 @@ export default function Notes(props) {
 
   function handleFileChange(event) {
     file.current = event.target.files[0];
+  }
+
+  function handleColorChangeComplete (color) {
+    setNoteColor(color.hex)
   }
 
   function saveNote(note) {
@@ -77,7 +84,8 @@ export default function Notes(props) {
 
       await saveNote({
         content,
-        attachment: attachment || note.attachment
+        attachment: attachment || note.attachment,
+        noteColor: noteColor || note.noteColor
       });
       props.history.push("/");
     } catch (e) {
@@ -140,6 +148,17 @@ export default function Notes(props) {
           <FormGroup controlId="file">
             {!note.attachment && <ControlLabel>Attachment</ControlLabel>}
             <FormControl onChange={handleFileChange} type="file" />
+          </FormGroup>
+          <FormGroup controlId="noteColor">
+            <ControlLabel>Select Note Color</ControlLabel>
+            <FormControl
+              value={noteColor}
+              type="hidden"
+            />
+            <CirclePicker
+              color={noteColor}
+              onChangeComplete={handleColorChangeComplete}
+             />
           </FormGroup>
           <LoaderButton
             block

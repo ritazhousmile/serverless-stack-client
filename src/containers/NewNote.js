@@ -4,11 +4,14 @@ import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import config from "../config";
 import { s3Upload } from "../libs/awsLib";
+import { CirclePicker } from 'react-color';
+// import ChangeColor from '../components/ChangeColor'
 import "./NewNote.css";
 
 export default function NewNote(props) {
   const file = useRef(null);
   const [content, setContent] = useState("");
+  const [noteColor, setNoteColor] = useState("#FFFFFF");
   const [isLoading, setIsLoading] = useState(false);
 
   function validateForm() {
@@ -17,6 +20,10 @@ export default function NewNote(props) {
 
   function handleFileChange(event) {
     file.current = event.target.files[0];
+  }
+
+  function handleColorChangeComplete (color) {
+    setNoteColor(color.hex)
   }
 
   async function handleSubmit(event) {
@@ -37,7 +44,7 @@ export default function NewNote(props) {
       ? await s3Upload(file.current)
       : null;
 
-    await createNote({ content, attachment });
+    await createNote({ content, attachment, noteColor });
     props.history.push("/");
   } catch (e) {
       alert(e);
@@ -63,6 +70,17 @@ export default function NewNote(props) {
         <FormGroup controlId="file">
           <ControlLabel>Attachment</ControlLabel>
           <FormControl onChange={handleFileChange} type="file" />
+        </FormGroup>
+        <FormGroup controlId="noteColor">
+          <ControlLabel>Select Note Color</ControlLabel>
+          <FormControl
+            value={noteColor}
+            type="hidden"
+          />
+          <CirclePicker
+            color={noteColor}
+            onChangeComplete={handleColorChangeComplete}
+           />
         </FormGroup>
         <LoaderButton
           block
