@@ -23,3 +23,7 @@
 .Home .notes p {
   color: #666;
 }
+
+a.list-group-item, a.list-group-item:hover {
+  background-color: inherit;
+}
