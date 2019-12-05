@@ -3,7 +3,7 @@ import { API, Storage } from "aws-amplify";
 import { s3Upload } from "../libs/awsLib";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
-import { CirclePicker } from 'react-color';
+import ChangeColor from '../components/ChangeColor'
 import config from "../config";
 import "./Notes.css";
 
@@ -29,9 +29,9 @@ export default function Notes(props) {
           note.attachmentURL = await Storage.vault.get(attachment);
         }
 
-        setNoteColor(noteColor)
         setContent(content);
         setNote(note);
+        setNoteColor(noteColor);
       } catch (e) {
         alert(e);
       }
@@ -149,17 +149,10 @@ export default function Notes(props) {
             {!note.attachment && <ControlLabel>Attachment</ControlLabel>}
             <FormControl onChange={handleFileChange} type="file" />
           </FormGroup>
-          <FormGroup controlId="noteColor">
-            <ControlLabel>Select Note Color</ControlLabel>
-            <FormControl
-              value={noteColor}
-              type="hidden"
-            />
-            <CirclePicker
-              color={noteColor}
-              onChangeComplete={handleColorChangeComplete}
-             />
-          </FormGroup>
+          <ChangeColor
+            noteColor={noteColor}
+            handler={handleColorChangeComplete}
+          />
           <LoaderButton
             block
             type="submit"

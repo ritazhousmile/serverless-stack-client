@@ -4,8 +4,7 @@ import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import config from "../config";
 import { s3Upload } from "../libs/awsLib";
-import { CirclePicker } from 'react-color';
-// import ChangeColor from '../components/ChangeColor'
+import ChangeColor from '../components/ChangeColor'
 import "./NewNote.css";
 
 export default function NewNote(props) {
@@ -71,17 +70,10 @@ export default function NewNote(props) {
           <ControlLabel>Attachment</ControlLabel>
           <FormControl onChange={handleFileChange} type="file" />
         </FormGroup>
-        <FormGroup controlId="noteColor">
-          <ControlLabel>Select Note Color</ControlLabel>
-          <FormControl
-            value={noteColor}
-            type="hidden"
-          />
-          <CirclePicker
-            color={noteColor}
-            onChangeComplete={handleColorChangeComplete}
-           />
-        </FormGroup>
+        <ChangeColor
+          noteColor={noteColor}
+          handler={handleColorChangeComplete}
+        />
         <LoaderButton
           block
           type="submit"

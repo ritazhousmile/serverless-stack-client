@@ -1,31 +1,24 @@
 import React, { useState } from "react";
+import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import { CirclePicker } from 'react-color';
 import "./ChangeColor.css";
 
-export default function ChangeColor (){
-
-  const [noteColor, setNoteColor] = useState('#FFFFFF');
-
-  // useEffect(
-  //   () => {
-  //     document.body.style.background = noteColor
-  //   }
-  // )
-
-  function handleColorChangeComplete (color, event) {
-
-
-    setNoteColor(color.hex)
-  }
-
-
-
+export default function ChangeColor ({
+  handler,
+  noteColor = noteColor,
+  ...props
+}){
   return (
-
+    <FormGroup controlId="noteColor">
+      <ControlLabel>Select Note Color</ControlLabel>
+      <FormControl
+        value={noteColor}
+        type="hidden"
+      />
       <CirclePicker
-
-      onClick={handleColorChangeComplete}
+        color={noteColor}
+        onChangeComplete={handler}
        />
-
+    </FormGroup>
   )
 }
