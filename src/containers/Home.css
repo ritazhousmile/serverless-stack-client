@@ -23,7 +23,31 @@
 .Home .notes p {
   color: #666;
 }
+.Home .lander div {
+  padding-top: 20px;
+}
+.Home .lander div a:first-child {
+  margin-right: 20px;
+}
 
 a.list-group-item, a.list-group-item:hover {
   background-color: inherit;
+
+}
+
+.list-group-item {
+  width: 31%;
+  display: inline-block;
+  height: 200px;
+  margin: 0.5%;
+  min-width: 320px;
+  border-radius: 12px;
+}
+
+.list-group-item-text {
+
+}
+
+.list-group-item-heading {
+
 }

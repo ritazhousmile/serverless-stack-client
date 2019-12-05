@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { PageHeader, ListGroup, ListGroupItem } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
+import { Link } from "react-router-dom";
 import { API } from "aws-amplify";
 import "./Home.css";
 
 export default function Home(props) {
   const [notes, setNotes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
 
   useEffect(() => {
   async function onLoad() {
@@ -34,13 +36,11 @@ export default function Home(props) {
   function renderNotesList(notes) {
   return [{}].concat(notes).map((note, i) =>
     i !== 0 ? (
-      <div style={{backgroundColor: note.noteColor}}>
-        <LinkContainer key={note.noteId} to={`/notes/${note.noteId}`}>
+        <LinkContainer key={note.noteId} to={`/notes/${note.noteId}`} style={{backgroundColor: note.noteColor}}>
           <ListGroupItem header={note.content.trim().split("\n")[0]}>
             {"Created: " + new Date(note.createdAt).toLocaleString()}
           </ListGroupItem>
         </LinkContainer>
-      </div>
     ) : (
         <LinkContainer key="new" to="/notes/new">
           <ListGroupItem>
@@ -58,9 +58,17 @@ export default function Home(props) {
       <div className="lander">
         <h1>Scratch</h1>
         <p>A simple note taking app</p>
-      </div>
-    );
-  }
+        <div>
+          <Link to="/login" className="btn btn-info btn-lg">
+            Login
+          </Link>
+          <Link to="/signup" className="btn btn-success btn-lg">
+            Signup
+          </Link>
+        </div>
+    </div>
+  );
+}
 
   function renderNotes() {
     return (
