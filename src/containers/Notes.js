@@ -3,6 +3,7 @@ import { API, Storage } from "aws-amplify";
 import { s3Upload } from "../libs/awsLib";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
+import ChangeColor from '../components/ChangeColor'
 import config from "../config";
 import "./Notes.css";
 
@@ -10,6 +11,7 @@ export default function Notes(props) {
   const file = useRef(null);
   const [note, setNote] = useState(null);
   const [content, setContent] = useState("");
+  const [noteColor, setNoteColor] = useState("#FFFFFF");
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -21,7 +23,7 @@ export default function Notes(props) {
     async function onLoad() {
       try {
         const note = await loadNote();
-        const { content, attachment } = note;
+        const { content, attachment, noteColor } = note;
 
         if (attachment) {
           note.attachmentURL = await Storage.vault.get(attachment);
@@ -29,6 +31,7 @@ export default function Notes(props) {
 
         setContent(content);
         setNote(note);
+        setNoteColor(noteColor);
       } catch (e) {
         alert(e);
       }
@@ -47,6 +50,10 @@ export default function Notes(props) {
 
   function handleFileChange(event) {
     file.current = event.target.files[0];
+  }
+
+  function handleColorChangeComplete (color) {
+    setNoteColor(color.hex)
   }
 
   function saveNote(note) {
@@ -77,7 +84,8 @@ export default function Notes(props) {
 
       await saveNote({
         content,
-        attachment: attachment || note.attachment
+        attachment: attachment || note.attachment,
+        noteColor: noteColor || note.noteColor
       });
       props.history.push("/");
     } catch (e) {
@@ -141,6 +149,10 @@ export default function Notes(props) {
             {!note.attachment && <ControlLabel>Attachment</ControlLabel>}
             <FormControl onChange={handleFileChange} type="file" />
           </FormGroup>
+          <ChangeColor
+            noteColor={noteColor}
+            handler={handleColorChangeComplete}
+          />
           <LoaderButton
             block
             type="submit"
