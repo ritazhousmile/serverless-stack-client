@@ -4,4 +4,9 @@
 
 .App .navbar-brand {
   font-weight: bold;
+  font-size: 40px;
+}
+.App .navbar {
+  background-color: #F8F8F8;
+  text: #53B75E,
 }
