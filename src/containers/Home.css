@@ -51,3 +51,14 @@ a.list-group-item, a.list-group-item:hover {
 .list-group-item-heading {
 
 }
+
+.enhanced-badge {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  background-color: #17a2b8;
+  border-radius: 10px;
+}

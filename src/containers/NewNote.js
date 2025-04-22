@@ -9,12 +9,13 @@ import "./NewNote.css";
 
 export default function NewNote(props) {
   const file = useRef(null);
+  const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [noteColor, setNoteColor] = useState("#FFFFFF");
   const [isLoading, setIsLoading] = useState(false);
 
   function validateForm() {
-    return content.length > 0;
+    return content.length > 0 && title.length > 0;
   }
 
   function handleFileChange(event) {
@@ -43,7 +44,7 @@ export default function NewNote(props) {
       ? await s3Upload(file.current)
       : null;
 
-    await createNote({ content, attachment, noteColor });
+    await createNote({ title, content, attachment, noteColor });
     props.history.push("/");
   } catch (e) {
       alert(e);
@@ -59,7 +60,17 @@ export default function NewNote(props) {
   return (
     <div className="NewNote">
       <form onSubmit={handleSubmit}>
+        <FormGroup controlId="title">
+          <ControlLabel>Title</ControlLabel>
+          <FormControl
+            value={title}
+            type="text"
+            onChange={e => setTitle(e.target.value)}
+            placeholder="Enter note title"
+          />
+        </FormGroup>
         <FormGroup controlId="content">
+          <ControlLabel>Content</ControlLabel>
           <FormControl
             value={content}
             componentClass="textarea"

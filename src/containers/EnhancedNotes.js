@@ -1,48 +1,52 @@
 import React, { useState, useEffect } from "react";
-import { PageHeader, ListGroup, ListGroupItem } from "react-bootstrap";
+import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { Link } from "react-router-dom";
 import { API } from "aws-amplify";
+import { useAppContext } from "../libs/contextLib";
+import { onError } from "../libs/errorLib";
+import "./EnhancedNotes.css";
 import "./Home.css";
 
-export default function Home(props) {
+export default function EnhancedNotes(props) {
   const [notes, setNotes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const { isAuthenticated } = useAppContext();
 
   useEffect(() => {
-  async function onLoad() {
-    if (!props.isAuthenticated) {
-      return;
+    async function onLoad() {
+      if (!isAuthenticated) {
+        return;
+      }
+  
+      try {
+        const notes = await loadNotes();
+        // 只保留有增强内容的笔记
+        const enhancedNotes = notes.filter(note => note.enhancedContent);
+        setNotes(enhancedNotes);
+      } catch (e) {
+        onError(e);
+      }
+  
+      setIsLoading(false);
     }
-
-    try {
-      const notes = await loadNotes();
-      setNotes(notes);
-    } catch (e) {
-      alert(e);
-    }
-
-    setIsLoading(false);
-  }
-
+  
     onLoad();
-  }, [props.isAuthenticated]);
-
+  }, [isAuthenticated]);
+  
   function loadNotes() {
     return API.get("notes", "/notes");
   }
 
   function renderNotesList(notes) {
-  return [{}].concat(notes).map((note, i) =>
-    i !== 0 ? (
-        <LinkContainer key={note.noteId} to={`/notes/${note.noteId}`} style={{backgroundColor: note.noteColor}}>
+    return [{}].concat(notes).map((note, i) =>
+      i !== 0 ? (
+        <LinkContainer key={note.noteId} to={`/notes/${note.noteId}`}>
           <ListGroupItem header={note.title || note.content.trim().split("\n")[0]}>
             {"Created: " + new Date(note.createdAt).toLocaleString()}
-            {note.enhancedContent && <div className="enhanced-badge">AI Enhanced</div>}
+            <div className="enhanced-badge">AI Enhanced</div>
           </ListGroupItem>
         </LinkContainer>
-    ) : (
+      ) : (
         <LinkContainer key="new" to="/notes/new">
           <ListGroupItem>
             <h4>
@@ -50,7 +54,7 @@ export default function Home(props) {
             </h4>
           </ListGroupItem>
         </LinkContainer>
-        )
+      )
     );
   }
 
@@ -58,23 +62,15 @@ export default function Home(props) {
     return (
       <div className="lander">
         <h1>Scratch</h1>
-        <p>A simple note taking app</p>
-        <div>
-          <Link to="/login" className="btn btn-info btn-lg">
-            Login
-          </Link>
-          <Link to="/signup" className="btn btn-success btn-lg">
-            Signup
-          </Link>
-        </div>
-    </div>
-  );
-}
+        <p>A simple note taking app with AI enhancement</p>
+      </div>
+    );
+  }
 
   function renderNotes() {
     return (
       <div className="notes">
-        <PageHeader>Your Notes</PageHeader>
+        <h1>Your Enhanced Notes</h1>
         <ListGroup>
           {!isLoading && renderNotesList(notes)}
         </ListGroup>
@@ -83,8 +79,8 @@ export default function Home(props) {
   }
 
   return (
-    <div className="Home">
-      {props.isAuthenticated ? renderNotes() : renderLander()}
+    <div className="EnhancedNotes">
+      {isAuthenticated ? renderNotes() : renderLander()}
     </div>
   );
-}
+} 

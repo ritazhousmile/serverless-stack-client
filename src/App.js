@@ -4,13 +4,12 @@ import { Nav, Navbar, NavItem } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Routes from "./Routes";
 import { Auth } from "aws-amplify";
-import TestApi from "./TestApi";
+import { AppContext } from "./libs/contextLib";
 import "./App.css";
 
 function App(props) {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
   const [isAuthenticated, userHasAuthenticated] = useState(false);
-  const [showTestApi, setShowTestApi] = useState(false);
 
   useEffect(() => {
     onLoad();
@@ -39,10 +38,6 @@ function App(props) {
     props.history.push("/login");
   }
 
-  function toggleTestApi() {
-    setShowTestApi(!showTestApi);
-  }
-
   return (
     !isAuthenticating && (
       <div className="App container">
@@ -57,11 +52,16 @@ function App(props) {
             <Nav pullRight>
               {isAuthenticated ? (
                 <>
+                  <LinkContainer to="/" exact>
+                    <NavItem>Notes</NavItem>
+                  </LinkContainer>
+                  <LinkContainer to="/enhanced-notes">
+                    <NavItem>Enhanced Notes</NavItem>
+                  </LinkContainer>
                   <LinkContainer to="/settings">
                     <NavItem>Settings</NavItem>
                   </LinkContainer>
                   <NavItem onClick={handleLogout}>Logout</NavItem>
-                  <NavItem onClick={toggleTestApi}>Test API</NavItem>
                 </>
               ) : (
                 <>
@@ -76,8 +76,9 @@ function App(props) {
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-        {showTestApi && <TestApi />}
-        <Routes appProps={{ isAuthenticated, userHasAuthenticated }} />
+        <AppContext.Provider value={{ isAuthenticated, userHasAuthenticated }}>
+          <Routes appProps={{ isAuthenticated, userHasAuthenticated }} />
+        </AppContext.Provider>
       </div>
     )
   );

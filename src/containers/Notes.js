@@ -9,9 +9,21 @@ import "./Notes.css";
 import "./EnhancedContent.css";
 import { marked } from "marked";
 
+// 配置marked以启用更多功能
+marked.setOptions({
+  breaks: true,        // 允许换行
+  gfm: true,           // 启用GitHub风格的Markdown
+  headerIds: true,     // 为标题添加id
+  sanitize: false,     // 允许HTML标签
+  smartLists: true,    // 使用更智能的列表行为
+  smartypants: true,   // 使用更智能的标点符号
+  xhtml: false         // 不使用xhtml
+});
+
 export default function Notes(props) {
   const file = useRef(null);
   const [note, setNote] = useState(null);
+  const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [noteColor, setNoteColor] = useState("#FFFFFF");
   const [isLoading, setIsLoading] = useState(false);
@@ -27,13 +39,14 @@ export default function Notes(props) {
     async function onLoad() {
       try {
         const note = await loadNote();
-        const { content, attachment, noteColor } = note;
+        const { content, attachment, noteColor, title } = note;
 
         if (attachment) {
           note.attachmentURL = await Storage.vault.get(attachment);
         }
 
         setContent(content);
+        setTitle(title || "");
         setNote(note);
         setNoteColor(noteColor);
       } catch (e) {
@@ -45,7 +58,7 @@ export default function Notes(props) {
   }, [props.match.params.id]);
 
   function validateForm() {
-    return content.length > 0;
+    return content.length > 0 && title.length > 0;
   }
 
   function formatFilename(str) {
@@ -87,6 +100,7 @@ export default function Notes(props) {
       }
 
       await saveNote({
+        title,
         content,
         attachment: attachment || note.attachment,
         noteColor: noteColor || note.noteColor
@@ -108,11 +122,39 @@ export default function Notes(props) {
       setContent(note.content);
       if (note.enhancedContent) {
         setEnhancedContent(note.enhancedContent);
+        // 如果有增强标题，则更新标题
+        if (note.enhancedTitle) {
+          setTitle(note.enhancedTitle);
+        }
+        // 显示增强内容，但保持在同一页面
       }
     } catch (e) {
       alert(e);
     } finally {
       setIsEnhancing(false);
+    }
+  }
+
+  async function handleSaveEnhancement() {
+    setIsLoading(true);
+    try {
+      // 保存当前的增强内容
+      await saveNote({
+        title: title,
+        content: enhancedContent,
+        attachment: note.attachment,
+        noteColor: noteColor || note.noteColor,
+        enhancedContent: enhancedContent // 保持增强内容的副本
+      });
+      
+      // 更新本地状态
+      setContent(enhancedContent);
+      
+      alert("增强版本已保存！");
+    } catch (e) {
+      alert(e);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -146,7 +188,17 @@ export default function Notes(props) {
     <div className="Notes">
       {note && (
         <form onSubmit={handleSubmit}>
+          <FormGroup controlId="title">
+            <ControlLabel>Title</ControlLabel>
+            <FormControl
+              value={title}
+              type="text"
+              onChange={e => setTitle(e.target.value)}
+              placeholder="Enter note title"
+            />
+          </FormGroup>
           <FormGroup controlId="content">
+            <ControlLabel>Content</ControlLabel>
             <FormControl
               value={content}
               componentClass="textarea"
@@ -208,7 +260,24 @@ export default function Notes(props) {
           {enhancedContent && (
             <div className="enhanced-content">
               <h3>AI增强版本</h3>
-              <div dangerouslySetInnerHTML={{ __html: marked(enhancedContent) }}></div>
+              <div className="markdown-content" dangerouslySetInnerHTML={{ __html: marked(enhancedContent) }}></div>
+              <div className="enhanced-actions">
+                <LoaderButton
+                  bsSize="large"
+                  bsStyle="success"
+                  onClick={() => setContent(enhancedContent)}
+                >
+                  应用AI增强版本
+                </LoaderButton>
+                <LoaderButton
+                  bsSize="large"
+                  bsStyle="primary"
+                  onClick={handleSaveEnhancement}
+                  isLoading={isLoading}
+                >
+                  保存增强版本
+                </LoaderButton>
+              </div>
             </div>
           )}
         </form>

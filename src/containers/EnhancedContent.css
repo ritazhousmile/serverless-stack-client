@@ -4,9 +4,129 @@
   background-color: #f8f9fa;
   border-radius: 5px;
   border-left: 4px solid #17a2b8;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
 }
 
 .enhanced-content h3 {
   color: #17a2b8;
   margin-bottom: 15px;
+  font-weight: 600;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* 美化Markdown内容 */
+.enhanced-content h1, 
+.enhanced-content h2, 
+.enhanced-content h3, 
+.enhanced-content h4, 
+.enhanced-content h5, 
+.enhanced-content h6 {
+  color: #333;
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.enhanced-content h1 {
+  font-size: 2em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #eaecef;
+}
+
+.enhanced-content h2 {
+  font-size: 1.5em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #eaecef;
+}
+
+.enhanced-content p {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.enhanced-content ul,
+.enhanced-content ol {
+  padding-left: 2em;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.enhanced-content li {
+  margin-bottom: 4px;
+}
+
+.enhanced-content blockquote {
+  padding: 0 1em;
+  color: #6a737d;
+  border-left: 0.25em solid #dfe2e5;
+  margin: 0 0 16px 0;
+}
+
+.enhanced-content pre {
+  background-color: #f6f8fa;
+  border-radius: 3px;
+  padding: 16px;
+  overflow: auto;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-size: 85%;
+  line-height: 1.45;
+  margin-bottom: 16px;
+}
+
+.enhanced-content code {
+  background-color: rgba(27, 31, 35, 0.05);
+  border-radius: 3px;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-size: 85%;
+  padding: 0.2em 0.4em;
+  margin: 0;
+}
+
+.enhanced-content img {
+  max-width: 100%;
+  box-sizing: content-box;
+  border-style: none;
+}
+
+.enhanced-content a {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+.enhanced-content a:hover {
+  text-decoration: underline;
+}
+
+.enhanced-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.enhanced-content table th,
+.enhanced-content table td {
+  padding: 6px 13px;
+  border: 1px solid #dfe2e5;
+}
+
+.enhanced-content table tr {
+  background-color: #fff;
+  border-top: 1px solid #c6cbd1;
+}
+
+.enhanced-content table tr:nth-child(2n) {
+  background-color: #f6f8fa;
+}
+
+.enhanced-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.enhanced-actions .btn {
+  flex: 1;
 } 
