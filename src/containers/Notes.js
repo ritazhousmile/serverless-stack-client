@@ -1,11 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import { API, Storage } from "aws-amplify";
-import { s3Upload } from "../libs/awsLib";
+import { s3Upload, enhanceNote } from "../libs/awsLib";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import ChangeColor from '../components/ChangeColor'
 import config from "../config";
 import "./Notes.css";
+import "./EnhancedContent.css";
+import { marked } from "marked";
 
 export default function Notes(props) {
   const file = useRef(null);
@@ -14,6 +16,8 @@ export default function Notes(props) {
   const [noteColor, setNoteColor] = useState("#FFFFFF");
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isEnhancing, setIsEnhancing] = useState(false);
+  const [enhancedContent, setEnhancedContent] = useState("");
 
   useEffect(() => {
     function loadNote() {
@@ -94,9 +98,27 @@ export default function Notes(props) {
     }
   }
 
+  async function handleEnhance() {
+    setIsEnhancing(true);
+    try {
+      await enhanceNote(props.match.params.id);
+      alert("笔记已被AI成功增强！");
+      // 重新加载笔记以获取增强内容
+      const note = await API.get("notes", `/notes/${props.match.params.id}`);
+      setContent(note.content);
+      if (note.enhancedContent) {
+        setEnhancedContent(note.enhancedContent);
+      }
+    } catch (e) {
+      alert(e);
+    } finally {
+      setIsEnhancing(false);
+    }
+  }
+
   function deleteNote() {
     return API.del("notes", `/notes/${props.match.params.id}`);
-    }
+  }
 
   async function handleDelete(event) {
     event.preventDefault();
@@ -172,6 +194,23 @@ export default function Notes(props) {
           >
             Delete
           </LoaderButton>
+          <hr />
+          <LoaderButton
+            block
+            bsSize="large"
+            bsStyle="info"
+            onClick={handleEnhance}
+            isLoading={isEnhancing}
+          >
+            {isEnhancing ? "增强中..." : "使用AI增强笔记"}
+          </LoaderButton>
+          
+          {enhancedContent && (
+            <div className="enhanced-content">
+              <h3>AI增强版本</h3>
+              <div dangerouslySetInnerHTML={{ __html: marked(enhancedContent) }}></div>
+            </div>
+          )}
         </form>
       )}
     </div>

@@ -1,0 +1,12 @@
+.enhanced-content {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  border-left: 4px solid #17a2b8;
+}
+
+.enhanced-content h3 {
+  color: #17a2b8;
+  margin-bottom: 15px;
+} 
