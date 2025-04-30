@@ -20,7 +20,7 @@ export default function EnhancedNotes(props) {
   
       try {
         const notes = await loadNotes();
-        // 只保留有增强内容的笔记
+        // Only keep notes with enhanced content
         const enhancedNotes = notes.filter(note => note.enhancedContent);
         setNotes(enhancedNotes);
       } catch (e) {

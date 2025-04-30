@@ -116,7 +116,7 @@ export default function Notes(props) {
     setIsEnhancing(true);
     try {
       await enhanceNote(props.match.params.id);
-      alert("笔记已被AI成功增强！");
+      alert("The note has been enhanced by AI!");
       // 重新加载笔记以获取增强内容
       const note = await API.get("notes", `/notes/${props.match.params.id}`);
       setContent(note.content);
@@ -150,7 +150,7 @@ export default function Notes(props) {
       // 更新本地状态
       setContent(enhancedContent);
       
-      alert("增强版本已保存！");
+      alert("Enhanced version saved!");
     } catch (e) {
       alert(e);
     } finally {
@@ -254,12 +254,12 @@ export default function Notes(props) {
             onClick={handleEnhance}
             isLoading={isEnhancing}
           >
-            {isEnhancing ? "增强中..." : "使用AI增强笔记"}
+            {isEnhancing ? "Enhancing..." : "Enhance with AI"}
           </LoaderButton>
           
           {enhancedContent && (
             <div className="enhanced-content">
-              <h3>AI增强版本</h3>
+              <h3>Enhanced Version</h3>
               <div className="markdown-content" dangerouslySetInnerHTML={{ __html: marked(enhancedContent) }}></div>
               <div className="enhanced-actions">
                 <LoaderButton
@@ -267,7 +267,7 @@ export default function Notes(props) {
                   bsStyle="success"
                   onClick={() => setContent(enhancedContent)}
                 >
-                  应用AI增强版本
+                  Apply Enhanced Version
                 </LoaderButton>
                 <LoaderButton
                   bsSize="large"
@@ -275,7 +275,7 @@ export default function Notes(props) {
                   onClick={handleSaveEnhancement}
                   isLoading={isLoading}
                 >
-                  保存增强版本
+                  Save Enhanced Version
                 </LoaderButton>
               </div>
             </div>
